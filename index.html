@@ -44,19 +44,17 @@
     padding:26px 22px 22px;
     border-bottom:3px solid var(--gold);
   }
-  .brand-row{display:flex;align-items:center;gap:14px;}
-  .brand-mark{
-    width:46px;height:46px;flex:0 0 46px;border:2px solid var(--gold);
-    border-radius:8px;display:flex;align-items:center;justify-content:center;
-    font-weight:bold;color:var(--gold);font-size:18px;letter-spacing:1px;
+  .brand-row{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;}
+  .brand-logo{
+    width:auto;max-width:260px;max-height:120px;height:auto;
+    display:block;margin:2px auto 10px;
   }
-  .brand-name{font-size:19px;font-weight:bold;letter-spacing:.5px;line-height:1.15;}
-  .brand-sub{font-size:12.5px;color:#b9c2d1;margin-top:2px;letter-spacing:.3px;}
+  .brand-sub{font-size:12.5px;color:#b9c2d1;margin-top:0;letter-spacing:1px;text-transform:uppercase;}
   header.brand h1{
     font-size:16px;margin:18px 0 4px;font-weight:bold;color:var(--gold);
-    letter-spacing:.3px;
+    letter-spacing:.3px;text-align:center;
   }
-  header.brand p.lead{font-size:13.5px;color:#cdd5e1;margin:0;}
+  header.brand p.lead{font-size:13.5px;color:#cdd5e1;margin:0;text-align:center;}
 
   /* Barra de progresso de seções */
   .steps{
@@ -221,11 +219,8 @@
 
   <header class="brand">
     <div class="brand-row">
-      <div class="brand-mark">AA</div>
-      <div>
-        <div class="brand-name">Arrais Advogados</div>
-        <div class="brand-sub">Direito Previdenciário e Trabalhista</div>
-      </div>
+      <img class="brand-logo" src="logo.png" alt="Arrais Advogados">
+      <div class="brand-sub">Direito Previdenciário e Trabalhista</div>
     </div>
     <h1>Ficha de Indicação de Cliente</h1>
     <p class="lead">Preencha os dados do cliente indicado. Ao enviar, a ficha é registrada e segue direto para a análise do escritório.</p>
