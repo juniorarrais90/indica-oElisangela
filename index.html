@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ficha de Indicação — Arrais Advogados</title>
+<style>
+  /* ============================================================
+     CONFIGURAÇÃO RÁPIDA — leia o passo a passo que o Júnior recebeu.
+     Cole aqui o endpoint do Formspree (ou outro backend) para as
+     fichas caírem direto no seu e-mail/painel. Enquanto vazio, o
+     formulário funciona e mostra a confirmação, mas não envia sozinho.
+     ============================================================ */
+  :root{
+    --navy:#0D2340;
+    --navy-soft:#16335b;
+    --gold:#C9A84C;
+    --gold-deep:#a8893a;
+    --ink:#1c2330;
+    --muted:#5d6675;
+    --line:#e3e6ec;
+    --bg:#f4f5f7;
+    --field:#ffffff;
+    --ok:#1f7a4d;
+    --err:#b3261e;
+    --radius:10px;
+    --shadow:0 1px 3px rgba(13,35,64,.08),0 8px 24px rgba(13,35,64,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.45;
+    font-size:16px;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 0 64px;}
+
+  /* Cabeçalho institucional */
+  header.brand{
+    background:var(--navy);
+    color:#fff;
+    padding:26px 22px 22px;
+    border-bottom:3px solid var(--gold);
+  }
+  .brand-row{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:46px;height:46px;flex:0 0 46px;border:2px solid var(--gold);
+    border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-weight:bold;color:var(--gold);font-size:18px;letter-spacing:1px;
+  }
+  .brand-name{font-size:19px;font-weight:bold;letter-spacing:.5px;line-height:1.15;}
+  .brand-sub{font-size:12.5px;color:#b9c2d1;margin-top:2px;letter-spacing:.3px;}
+  header.brand h1{
+    font-size:16px;margin:18px 0 4px;font-weight:bold;color:var(--gold);
+    letter-spacing:.3px;
+  }
+  header.brand p.lead{font-size:13.5px;color:#cdd5e1;margin:0;}
+
+  /* Barra de progresso de seções */
+  .steps{
+    display:flex;background:var(--navy-soft);padding:0;margin:0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .steps li{
+    list-style:none;flex:1;text-align:center;color:#8fa0bb;font-size:11px;
+    padding:9px 2px;border-right:1px solid rgba(255,255,255,.06);
+    letter-spacing:.2px;
+  }
+  .steps li:last-child{border-right:none;}
+  .steps li.active{color:var(--gold);font-weight:bold;}
+
+  form{padding:8px 0 0;}
+  .card{
+    background:var(--field);margin:16px 14px 0;border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+  }
+  .card-head{
+    display:flex;align-items:center;gap:10px;padding:14px 16px;
+    border-bottom:1px solid var(--line);background:#fbfbfc;
+  }
+  .card-num{
+    width:24px;height:24px;flex:0 0 24px;background:var(--navy);color:var(--gold);
+    border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:bold;
+  }
+  .card-title{font-size:14.5px;font-weight:bold;color:var(--navy);}
+  .card-body{padding:16px;}
+
+  .field{margin-bottom:15px;}
+  .field:last-child{margin-bottom:0;}
+  label.lbl{display:block;font-size:13.5px;font-weight:bold;margin-bottom:6px;color:var(--ink);}
+  label.lbl .req{color:var(--err);font-weight:bold;}
+  .hint{font-size:12px;color:var(--muted);margin:-2px 0 7px;}
+  .parceira-fixa{
+    font-size:17px;font-weight:bold;color:var(--navy);
+    border-left:3px solid var(--gold);padding:4px 0 4px 12px;letter-spacing:.2px;
+  }
+
+  input[type=text],input[type=tel],input[type=number],input[type=date],select,textarea{
+    width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:8px;
+    font-size:16px;font-family:inherit;color:var(--ink);background:#fff;
+    transition:border-color .15s;
+  }
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
+  textarea{min-height:84px;resize:vertical;}
+  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%230D2340' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+  .row2{display:flex;gap:11px;}
+  .row2>.field{flex:1;}
+  .grow{flex:1;}
+  .shrink{flex:0 0 110px;}
+
+  input.invalid,select.invalid,textarea.invalid{border-color:var(--err);background:#fdf3f2;}
+  .errmsg{display:none;color:var(--err);font-size:12px;margin-top:5px;font-weight:bold;}
+  .errmsg.show{display:block;}
+
+  /* Caixas de benefício (checkbox cards) */
+  .benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .benefit{
+    position:relative;border:1.5px solid var(--line);border-radius:9px;
+    padding:13px 12px 13px 40px;cursor:pointer;font-size:14px;font-weight:bold;
+    color:var(--ink);background:#fff;user-select:none;line-height:1.25;
+  }
+  .benefit small{display:block;font-weight:normal;color:var(--muted);font-size:11.5px;margin-top:2px;}
+  .benefit input{position:absolute;opacity:0;width:0;height:0;}
+  .benefit .box{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    width:20px;height:20px;border:2px solid #c4cad6;border-radius:5px;background:#fff;
+  }
+  .benefit input:checked ~ .box{background:var(--navy);border-color:var(--navy);}
+  .benefit input:checked ~ .box:after{
+    content:"";position:absolute;left:5px;top:1px;width:6px;height:11px;
+    border:solid var(--gold);border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+  }
+  .benefit:has(input:checked){border-color:var(--navy);background:#f6f8fc;}
+
+  /* radios / checkbox inline (sim-não etc) */
+  .opts{display:flex;gap:9px;flex-wrap:wrap;}
+  .opt{
+    flex:1;min-width:fit-content;border:1.5px solid var(--line);border-radius:8px;
+    padding:11px 10px;text-align:center;cursor:pointer;font-size:14px;font-weight:bold;
+    color:var(--ink);background:#fff;user-select:none;
+  }
+  .opt input{position:absolute;opacity:0;width:0;height:0;}
+  .opt:has(input:checked){border-color:var(--navy);background:var(--navy);color:#fff;}
+
+  /* blocos dinâmicos por benefício */
+  .dyn{display:none;border-top:1px dashed var(--line);margin-top:4px;padding-top:14px;}
+  .dyn.show{display:block;animation:fade .25s ease;}
+  .dyn-tag{
+    display:inline-block;font-size:11.5px;font-weight:bold;color:var(--navy);
+    background:#f1ead4;border:1px solid var(--gold);border-radius:20px;
+    padding:3px 11px;margin-bottom:13px;letter-spacing:.2px;
+  }
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+
+  /* upload */
+  .drop{
+    border:1.5px dashed #c4cad6;border-radius:9px;padding:20px 14px;text-align:center;
+    background:#fafbfc;cursor:pointer;color:var(--muted);font-size:13.5px;
+  }
+  .drop strong{color:var(--navy);}
+  .filelist{margin-top:10px;display:flex;flex-direction:column;gap:7px;}
+  .fileitem{
+    display:flex;align-items:center;gap:9px;font-size:13px;background:#f6f8fc;
+    border:1px solid var(--line);border-radius:7px;padding:8px 10px;color:var(--ink);
+  }
+  .fileitem .x{margin-left:auto;color:var(--err);cursor:pointer;font-weight:bold;padding:2px 6px;}
+  .fileitem .ic{color:var(--navy);font-weight:bold;}
+
+  /* consentimento */
+  .consent{
+    margin:16px 14px 0;background:#fbfaf4;border:1px solid var(--gold);
+    border-radius:var(--radius);padding:14px 15px;font-size:12.5px;color:#5b5436;line-height:1.5;
+  }
+  .consent label{display:flex;gap:10px;align-items:flex-start;margin-top:11px;cursor:pointer;font-size:13px;color:var(--ink);font-weight:bold;}
+  .consent input{margin-top:2px;width:18px;height:18px;flex:0 0 18px;accent-color:var(--navy);}
+
+  /* botão enviar */
+  .submit-wrap{padding:18px 14px 0;}
+  button.send{
+    width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:10px;
+    padding:16px;font-size:16.5px;font-weight:bold;font-family:inherit;cursor:pointer;
+    letter-spacing:.3px;box-shadow:0 4px 14px rgba(201,168,76,.35);transition:transform .1s,background .15s;
+  }
+  button.send:active{transform:translateY(1px);}
+  button.send:disabled{background:#d8d8d8;color:#8a8a8a;box-shadow:none;cursor:not-allowed;}
+  .send-note{text-align:center;font-size:12px;color:var(--muted);margin-top:11px;padding:0 8px;}
+
+  footer.foot{text-align:center;font-size:11.5px;color:var(--muted);margin-top:26px;padding:0 20px;line-height:1.6;}
+
+  /* tela de sucesso (trava) */
+  .done{display:none;padding:40px 24px;text-align:center;}
+  .done.show{display:block;}
+  .done .seal{
+    width:74px;height:74px;margin:0 auto 18px;border-radius:50%;background:var(--ok);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .done .seal:after{content:"";width:20px;height:36px;border:solid #fff;border-width:0 5px 5px 0;transform:rotate(45deg);margin-top:-6px;}
+  .done h2{color:var(--navy);font-size:21px;margin:0 0 8px;}
+  .done p{color:var(--muted);font-size:14.5px;margin:0 auto;max-width:380px;}
+  .done .proto{
+    margin:20px auto 0;display:inline-block;background:var(--navy);color:var(--gold);
+    font-weight:bold;border-radius:8px;padding:11px 18px;font-size:14px;letter-spacing:.5px;
+  }
+  .done .reset{
+    margin-top:26px;background:none;border:1.5px solid var(--navy);color:var(--navy);
+    border-radius:8px;padding:12px 22px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;
+  }
+
+  @media (max-width:420px){
+    .benefits{grid-template-columns:1fr;}
+    .row2{flex-direction:column;gap:0;}
+    .shrink{flex:1;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="brand">
+    <div class="brand-row">
+      <div class="brand-mark">AA</div>
+      <div>
+        <div class="brand-name">Arrais Advogados</div>
+        <div class="brand-sub">Direito Previdenciário e Trabalhista</div>
+      </div>
+    </div>
+    <h1>Ficha de Indicação de Cliente</h1>
+    <p class="lead">Preencha os dados do cliente indicado. Ao enviar, a ficha é registrada e segue direto para a análise do escritório.</p>
+  </header>
+
+  <ul class="steps">
+    <li class="active">Indicação</li>
+    <li>Benefício</li>
+    <li>Cliente</li>
+    <li>Envio</li>
+  </ul>
+
+  <!-- ===================== FORMULÁRIO ===================== -->
+  <form id="ficha" novalidate>
+
+    <!-- anti-spam: campo invisível; bots preenchem, pessoas não veem -->
+    <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+
+    <!-- 1. Identificação da indicação (fixa para esta parceira) -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">1</div><div class="card-title">Indicação de</div></div>
+      <div class="card-body">
+        <!-- Para trocar a parceira, altere o nome nos DOIS pontos abaixo -->
+        <div class="parceira-fixa">Elisângela Alda</div>
+        <input type="hidden" id="adv" name="advogada_parceira" value="Elisângela Alda">
+      </div>
+    </section>
+
+    <!-- 2. Tipo de benefício -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">2</div><div class="card-title">Tipo de causa / benefício</div></div>
+      <div class="card-body">
+        <div class="hint" style="margin-top:0;">Marque uma ou mais opções. Os campos específicos aparecem abaixo conforme a marcação.</div>
+        <div class="benefits">
+          <label class="benefit"><input type="checkbox" name="beneficio" value="Salário-maternidade" data-dyn="d-sm">Salário-maternidade<small>Gestante, parto recente ou adoção</small><span class="box"></span></label>
+          <label class="benefit"><input type="checkbox" name="beneficio" value="BPC/LOAS" data-dyn="d-bpc">BPC / LOAS<small>Idoso 65+ ou deficiência</small><span class="box"></span></label>
+          <label class="benefit"><input type="checkbox" name="beneficio" value="Aposentadoria" data-dyn="d-apo">Aposentadoria<small>Idade, tempo, invalidez, rural</small><span class="box"></span></label>
+          <label class="benefit"><input type="checkbox" name="beneficio" value="Auxílio-doença" data-dyn="d-aux">Auxílio-doença<small>Incapacidade / afastamento</small><span class="box"></span></label>
+          <label class="benefit"><input type="checkbox" name="beneficio" value="Auxílio-acidente" data-dyn="d-aci">Auxílio-acidente<small>Sequela após acidente</small><span class="box"></span></label>
+          <label class="benefit"><input type="checkbox" name="beneficio" value="Trabalhista" data-dyn="d-trab">Trabalhista<small>Verbas, rescisão, vínculo</small><span class="box"></span></label>
+        </div>
+        <div class="errmsg" data-for="beneficio" style="margin-top:10px;">Marque ao menos um tipo.</div>
+      </div>
+    </section>
+
+    <!-- 3. Dados do cliente -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">3</div><div class="card-title">Dados do cliente</div></div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl" for="nome">Nome completo do cliente <span class="req">*</span></label>
+          <input type="text" id="nome" name="cliente_nome" placeholder="Nome completo" autocomplete="off">
+          <div class="errmsg" data-for="nome">Informe o nome do cliente.</div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="nasc">Data de nascimento <span class="req">*</span></label>
+            <input type="date" id="nasc" name="cliente_nascimento">
+            <div class="errmsg" data-for="nasc">Informe a data.</div>
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="idade">Idade</label>
+            <input type="text" id="idade" name="cliente_idade" readonly placeholder="—" style="background:#f5f6f8;">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="estciv">Estado civil</label>
+          <select id="estciv" name="cliente_estado_civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option>
+            <option>Divorciado(a)</option><option>Viúvo(a)</option>
+          </select>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="cpf">CPF <span class="req">*</span></label>
+            <input type="tel" id="cpf" name="cliente_cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+            <div class="errmsg" data-for="cpf">CPF inválido.</div>
+          </div>
+          <div class="field grow">
+            <label class="lbl" for="rg">RG</label>
+            <input type="text" id="rg" name="cliente_rg" placeholder="0000000-0">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="contato">Telefone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="contato" name="cliente_contato" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="15">
+          <div class="errmsg" data-for="contato">Informe um telefone.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="senhagov">Senha Gov.br</label>
+          <div class="hint">Acesso autorizado por procuração. Preencha somente se o cliente forneceu.</div>
+          <input type="text" id="senhagov" name="cliente_senha_gov" placeholder="Senha gov.br" autocomplete="off">
+        </div>
+        <div class="field">
+          <label class="lbl">Recebe Bolsa Família?</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="bolsa_familia" value="Sim">Sim</label>
+            <label class="opt"><input type="radio" name="bolsa_familia" value="Não">Não</label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Trabalha atualmente?</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="trabalha" value="Sim">Sim</label>
+            <label class="opt"><input type="radio" name="trabalha" value="Não">Não</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Endereço -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">4</div><div class="card-title">Endereço</div></div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl">Zona de residência</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="zona" value="Urbana">Urbana</label>
+            <label class="opt"><input type="radio" name="zona" value="Rural">Rural</label>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field shrink">
+            <label class="lbl" for="cep">CEP</label>
+            <input type="tel" id="cep" name="end_cep" inputmode="numeric" placeholder="00000-000" maxlength="9">
+          </div>
+          <div class="field grow">
+            <label class="lbl" for="cidade">Cidade <span class="req">*</span></label>
+            <input type="text" id="cidade" name="end_cidade" placeholder="Cidade">
+            <div class="errmsg" data-for="cidade">Informe a cidade.</div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="bairro">Bairro</label>
+            <input type="text" id="bairro" name="end_bairro" placeholder="Bairro">
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="uf">UF <span class="req">*</span></label>
+            <input type="text" id="uf" name="end_uf" placeholder="UF" maxlength="2" style="text-transform:uppercase;">
+            <div class="errmsg" data-for="uf">UF</div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="rua">Rua / logradouro</label>
+            <input type="text" id="rua" name="end_rua" placeholder="Rua, avenida...">
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="num">Número</label>
+            <input type="text" id="num" name="end_numero" placeholder="Nº">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="compl">Complemento / ponto de referência</label>
+          <input type="text" id="compl" name="end_complemento" placeholder="Apto, bloco, referência">
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Campos específicos por benefício -->
+    <section class="card" id="cardEspecifico" style="display:none;">
+      <div class="card-head"><div class="card-num">5</div><div class="card-title">Detalhes do benefício</div></div>
+      <div class="card-body">
+
+        <!-- Salário-maternidade -->
+        <div class="dyn" id="d-sm">
+          <span class="dyn-tag">Salário-maternidade</span>
+          <div class="field">
+            <label class="lbl">Situação</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="sm_situacao" value="Gestante">Gestante</label>
+              <label class="opt"><input type="radio" name="sm_situacao" value="Bebê já nasceu">Já nasceu</label>
+              <label class="opt"><input type="radio" name="sm_situacao" value="Adoção/guarda">Adoção</label>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field grow">
+              <label class="lbl" for="sm_meses">Meses de gestação</label>
+              <input type="number" id="sm_meses" name="sm_meses" min="0" max="10" placeholder="Ex.: 7">
+            </div>
+            <div class="field grow">
+              <label class="lbl" for="sm_data">Nascimento ou data prevista</label>
+              <input type="date" id="sm_data" name="sm_data_parto">
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="sm_vinculo">Vínculo de trabalho</label>
+            <select id="sm_vinculo" name="sm_vinculo">
+              <option value="">Selecione</option>
+              <option>CLT (carteira assinada)</option>
+              <option>Empregada doméstica</option>
+              <option>Trabalhadora avulsa</option>
+              <option>Autônoma / contribuinte individual</option>
+              <option>MEI</option>
+              <option>Segurada especial (rural)</option>
+              <option>Desempregada / sem contribuição recente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="sm_ultcontrib">Última contribuição ao INSS (mês/ano)</label>
+            <input type="text" id="sm_ultcontrib" name="sm_ultima_contribuicao" placeholder="Ex.: 03/2026">
+          </div>
+        </div>
+
+        <!-- BPC/LOAS -->
+        <div class="dyn" id="d-bpc">
+          <span class="dyn-tag">BPC / LOAS</span>
+          <div class="field">
+            <label class="lbl">Tipo</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="bpc_tipo" value="Idoso 65+">Idoso 65+</label>
+              <label class="opt"><input type="radio" name="bpc_tipo" value="Pessoa com deficiência">Deficiência</label>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field shrink">
+              <label class="lbl" for="bpc_pessoas">Pessoas na casa</label>
+              <input type="number" id="bpc_pessoas" name="bpc_pessoas" min="1" placeholder="Ex.: 4">
+            </div>
+            <div class="field grow">
+              <label class="lbl" for="bpc_renda">Renda total da família (R$)</label>
+              <input type="text" id="bpc_renda" name="bpc_renda" inputmode="decimal" placeholder="Ex.: 1.500,00">
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="bpc_def">Deficiência / doença (se aplicável)</label>
+            <input type="text" id="bpc_def" name="bpc_deficiencia" placeholder="Descreva. CID se souber">
+          </div>
+          <div class="field">
+            <label class="lbl" for="bpc_outro">Recebe outro benefício? Qual?</label>
+            <input type="text" id="bpc_outro" name="bpc_outro_beneficio" placeholder="Ex.: nenhum / Bolsa Família">
+          </div>
+        </div>
+
+        <!-- Aposentadoria -->
+        <div class="dyn" id="d-apo">
+          <span class="dyn-tag">Aposentadoria</span>
+          <div class="field">
+            <label class="lbl" for="apo_tipo">Tipo de aposentadoria</label>
+            <select id="apo_tipo" name="apo_tipo">
+              <option value="">Selecione</option>
+              <option>Por idade</option>
+              <option>Por tempo de contribuição</option>
+              <option>Por invalidez / incapacidade permanente</option>
+              <option>Especial (insalubre/perigosa)</option>
+              <option>Rural</option>
+              <option>Professor(a)</option>
+              <option>Não sei / preciso de análise</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="apo_tempo">Tempo de contribuição aproximado (anos)</label>
+            <input type="text" id="apo_tempo" name="apo_tempo" placeholder="Ex.: 25 anos">
+          </div>
+          <div class="field">
+            <label class="lbl">Trabalhou na roça / atividade rural?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="apo_rural" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="apo_rural" value="Não">Não</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Trabalhou exposto a insalubridade/periculosidade?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="apo_especial" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="apo_especial" value="Não">Não</label>
+              <label class="opt"><input type="radio" name="apo_especial" value="Não sei">Não sei</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auxílio-doença -->
+        <div class="dyn" id="d-aux">
+          <span class="dyn-tag">Auxílio-doença</span>
+          <div class="field">
+            <label class="lbl" for="aux_doenca">Doença / problema de saúde</label>
+            <input type="text" id="aux_doenca" name="aux_doenca" placeholder="Descreva. CID se souber">
+          </div>
+          <div class="field">
+            <label class="lbl">Está afastado do trabalho?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="aux_afastado" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="aux_afastado" value="Não">Não</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Tem laudos / atestados médicos?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="aux_laudos" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="aux_laudos" value="Não">Não</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Já deu entrada no INSS?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="aux_deu_entrada" value="Não">Não</label>
+              <label class="opt"><input type="radio" name="aux_deu_entrada" value="Sim, aguardando">Aguardando</label>
+              <label class="opt"><input type="radio" name="aux_deu_entrada" value="Sim, foi negado">Negado</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auxílio-acidente -->
+        <div class="dyn" id="d-aci">
+          <span class="dyn-tag">Auxílio-acidente</span>
+          <div class="field">
+            <label class="lbl" for="aci_oque">O que aconteceu (acidente)</label>
+            <textarea id="aci_oque" name="aci_descricao" placeholder="Descreva como foi o acidente"></textarea>
+          </div>
+          <div class="field">
+            <label class="lbl" for="aci_sequela">Qual sequela ficou</label>
+            <input type="text" id="aci_sequela" name="aci_sequela" placeholder="Ex.: redução de movimento no braço">
+          </div>
+          <div class="field">
+            <label class="lbl">Está trabalhando atualmente?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="aci_trabalhando" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="aci_trabalhando" value="Não">Não</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Recebeu auxílio-doença pelo acidente antes?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="aci_recebeu_aux" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="aci_recebeu_aux" value="Não">Não</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trabalhista -->
+        <div class="dyn" id="d-trab">
+          <span class="dyn-tag">Trabalhista</span>
+          <div class="field">
+            <label class="lbl" for="trab_empresa">Empresa (reclamada)</label>
+            <input type="text" id="trab_empresa" name="trab_empresa" placeholder="Nome da empresa">
+          </div>
+          <div class="row2">
+            <div class="field grow">
+              <label class="lbl" for="trab_de">Trabalhou de</label>
+              <input type="text" id="trab_de" name="trab_periodo_de" placeholder="mês/ano">
+            </div>
+            <div class="field grow">
+              <label class="lbl" for="trab_ate">até</label>
+              <input type="text" id="trab_ate" name="trab_periodo_ate" placeholder="mês/ano">
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Carteira assinada?</label>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="trab_carteira" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="trab_carteira" value="Não">Não</label>
+              <label class="opt"><input type="radio" name="trab_carteira" value="Parte do período">Parte</label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="trab_situacao">Situação atual</label>
+            <select id="trab_situacao" name="trab_situacao">
+              <option value="">Selecione</option>
+              <option>Ainda trabalhando</option>
+              <option>Foi demitido(a) sem justa causa</option>
+              <option>Foi demitido(a) por justa causa</option>
+              <option>Pediu demissão</option>
+              <option>Acordo / outro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="trab_problema">O que aconteceu / qual o problema</label>
+            <textarea id="trab_problema" name="trab_problema" placeholder="Ex.: horas extras não pagas, verbas rescisórias, assédio..."></textarea>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. Documentos -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">6</div><div class="card-title">Documentos (foto ou PDF)</div></div>
+      <div class="card-body">
+        <label class="drop" for="docs">
+          <strong>Toque para anexar</strong><br>RG, CPF, comprovantes, laudos, carteira de trabalho...<br>
+          <span style="font-size:12px;">Fotos ou PDF — pode selecionar vários</span>
+        </label>
+        <input type="file" id="docs" name="documentos" accept="image/*,application/pdf" multiple style="display:none;">
+        <div class="filelist" id="filelist"></div>
+      </div>
+    </section>
+
+    <!-- 7. Observações -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">7</div><div class="card-title">Observações da parceira</div></div>
+      <div class="card-body">
+        <div class="field" style="margin:0;">
+          <label class="lbl" for="obs">Algo importante sobre o caso (opcional)</label>
+          <textarea id="obs" name="observacoes" placeholder="Contexto, urgência, detalhes que ajudem na análise..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consentimento LGPD -->
+    <div class="consent">
+      Os dados informados serão utilizados exclusivamente para análise jurídica e eventual atuação do escritório Arrais Advogados, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018) e com o sigilo profissional da advocacia.
+      <label><input type="checkbox" id="lgpd" name="consentimento">Declaro que o cliente autorizou o compartilhamento destes dados com o escritório para análise do seu caso.</label>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="send" id="btnSend">Enviar ficha</button>
+      <p class="send-note">Após o envio, a ficha é registrada e não poderá mais ser editada.</p>
+    </div>
+  </form>
+
+  <!-- Tela de confirmação (trava) -->
+  <div class="done" id="done">
+    <div class="seal"></div>
+    <h2>Ficha enviada</h2>
+    <p>Recebemos a indicação. O escritório vai analisar o caso e dar retorno. Obrigado pela parceria.</p>
+    <div class="proto" id="proto">PROTOCOLO</div>
+    <br>
+    <button class="reset" id="btnNew">Enviar outra ficha</button>
+  </div>
+
+  <footer class="foot">
+    Arrais Advogados — OAB/MG 19.391<br>
+    Uso interno da rede de parceiros. Dados protegidos pela LGPD.
+  </footer>
+
+</div>
+
+<script>
+/* ===================== CONFIGURAÇÃO DO ENVIO =====================
+   Cole entre as aspas o endpoint do Formspree (ou outro backend).
+   Exemplo Formspree: "https://formspree.io/f/xxxxxxx"
+   Enquanto vazio, o formulário valida e mostra a confirmação, mas
+   NÃO envia para lugar nenhum (modo demonstração).
+================================================================== */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzbM4o6KuGA2pfPbHuLdwvN_ZDGkl4g0FCNCJM0lztrBHz3XmROqmxr3XFQxx5iHKAI/exec";
+const TOKEN = "arrais-2cb4da5540a543f4"; // precisa ser IGUAL ao TOKEN do Apps Script
+
+/* ---------- máscaras ---------- */
+const $ = s => document.querySelector(s);
+const onlyNum = v => v.replace(/\D/g,'');
+
+$('#cpf').addEventListener('input',e=>{
+  let v=onlyNum(e.target.value).slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value=v;
+});
+$('#contato').addEventListener('input',e=>{
+  let v=onlyNum(e.target.value).slice(0,11);
+  if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  else if(v.length>6) v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+  e.target.value=v;
+});
+$('#cep').addEventListener('input',e=>{
+  let v=onlyNum(e.target.value).slice(0,8);
+  v=v.replace(/(\d{5})(\d)/,'$1-$2');
+  e.target.value=v;
+});
+
+/* ---------- idade automática ---------- */
+$('#nasc').addEventListener('change',e=>{
+  const d=new Date(e.target.value);
+  if(isNaN(d)){$('#idade').value='';return;}
+  const hoje=new Date();let a=hoje.getFullYear()-d.getFullYear();
+  const m=hoje.getMonth()-d.getMonth();
+  if(m<0||(m===0&&hoje.getDate()<d.getDate()))a--;
+  $('#idade').value = a>=0 ? a+' anos' : '';
+});
+
+/* ---------- CEP -> ViaCEP (preenche cidade/bairro/rua/uf) ---------- */
+$('#cep').addEventListener('blur',async e=>{
+  const cep=onlyNum(e.target.value);
+  if(cep.length!==8)return;
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const d=await r.json();
+    if(d.erro)return;
+    if(d.localidade)$('#cidade').value=d.localidade;
+    if(d.uf)$('#uf').value=d.uf;
+    if(d.bairro)$('#bairro').value=d.bairro;
+    if(d.logradouro)$('#rua').value=d.logradouro;
+    clearErr($('#cidade'));clearErr($('#uf'));
+  }catch(_){}
+});
+
+/* ---------- blocos dinâmicos por benefício ---------- */
+const card5=$('#cardEspecifico');
+function syncDyn(){
+  let any=false;
+  document.querySelectorAll('input[name="beneficio"]').forEach(cb=>{
+    const blk=document.getElementById(cb.dataset.dyn);
+    if(cb.checked){blk.classList.add('show');any=true;}
+    else blk.classList.remove('show');
+  });
+  card5.style.display = any ? 'block' : 'none';
+}
+document.querySelectorAll('input[name="beneficio"]').forEach(cb=>{
+  cb.addEventListener('change',()=>{syncDyn();clearErrGroup('beneficio');});
+});
+
+/* ---------- anexos ---------- */
+const fileInput=$('#docs');
+const fileList=$('#filelist');
+let files=[];
+fileInput.addEventListener('change',()=>{
+  for(const f of fileInput.files){files.push(f);}
+  renderFiles();
+});
+function renderFiles(){
+  fileList.innerHTML='';
+  files.forEach((f,i)=>{
+    const el=document.createElement('div');
+    el.className='fileitem';
+    const kb=(f.size/1024).toFixed(0);
+    el.innerHTML=`<span class="ic">${f.type.includes('pdf')?'PDF':'IMG'}</span><span>${f.name}</span><span style="color:#9aa3b2;font-size:11px;">${kb} KB</span><span class="x" data-i="${i}">remover</span>`;
+    fileList.appendChild(el);
+  });
+  fileList.querySelectorAll('.x').forEach(x=>{
+    x.onclick=()=>{files.splice(+x.dataset.i,1);renderFiles();};
+  });
+}
+
+/* ---------- validação ---------- */
+function showErr(el){el.classList.add('invalid');const m=document.querySelector(`.errmsg[data-for="${el.id}"]`);if(m)m.classList.add('show');}
+function clearErr(el){el.classList.remove('invalid');const m=document.querySelector(`.errmsg[data-for="${el.id}"]`);if(m)m.classList.remove('show');}
+function clearErrGroup(name){const m=document.querySelector(`.errmsg[data-for="${name}"]`);if(m)m.classList.remove('show');}
+['nome','nasc','cpf','contato','cidade','uf'].forEach(id=>{
+  $('#'+id).addEventListener('input',()=>clearErr($('#'+id)));
+});
+
+function validaCPF(cpf){
+  cpf=onlyNum(cpf);
+  if(cpf.length!==11||/^(\d)\1{10}$/.test(cpf))return false;
+  let s=0;for(let i=0;i<9;i++)s+=+cpf[i]*(10-i);
+  let d1=11-(s%11);if(d1>=10)d1=0;if(d1!==+cpf[9])return false;
+  s=0;for(let i=0;i<10;i++)s+=+cpf[i]*(11-i);
+  let d2=11-(s%11);if(d2>=10)d2=0;return d2===+cpf[10];
+}
+
+/* ---------- preparo de arquivos (comprime imagem, gera base64) ---------- */
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;r.readAsDataURL(file);
+  });
+}
+function processarArquivo(file){
+  return new Promise(async resolve=>{
+    if(!file.type.startsWith('image/')){
+      const b64=await fileToBase64(file);
+      resolve({nome:file.name,type:file.type||'application/octet-stream',base64:b64});return;
+    }
+    const img=new Image();const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const max=1600;let w=img.width,h=img.height;
+      if(w>max||h>max){ if(w>=h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;} }
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      const data=c.toDataURL('image/jpeg',0.7);
+      const nome=file.name.replace(/\.(png|jpe?g|webp|heic|heif)$/i,'')+'.jpg';
+      resolve({nome:nome,type:'image/jpeg',base64:data.split(',')[1]});
+    };
+    img.onerror=async ()=>{URL.revokeObjectURL(url);const b64=await fileToBase64(file);resolve({nome:file.name,type:file.type,base64:b64});};
+    img.src=url;
+  });
+}
+
+/* ---------- envio ---------- */
+$('#ficha').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if($('#_gotcha').value){return;} // bot: aborta em silêncio
+
+  let ok=true;const focusFirst=()=>{const f=document.querySelector('.invalid');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});};
+
+  [['nome'],['nasc'],['contato'],['cidade'],['uf']].forEach(([id])=>{
+    const el=$('#'+id);if(!el.value.trim()){showErr(el);ok=false;}else clearErr(el);
+  });
+  const cpfEl=$('#cpf');
+  if(!validaCPF(cpfEl.value)){showErr(cpfEl);ok=false;}else clearErr(cpfEl);
+
+  const benef=[...document.querySelectorAll('input[name="beneficio"]:checked')].map(c=>c.value);
+  if(benef.length===0){document.querySelector('.errmsg[data-for="beneficio"]').classList.add('show');ok=false;}
+
+  if(!$('#lgpd').checked){alert('Confirme a autorização do cliente (LGPD) para enviar.');ok=false;}
+  if(!ok){focusFirst();return;}
+
+  const btn=$('#btnSend');btn.disabled=true;btn.textContent='Enviando...';
+
+  // monta o payload com todos os campos de texto
+  const payload={};
+  const fd=new FormData($('#ficha'));
+  for(const [k,v] of fd.entries()){
+    if(k==='documentos'||k==='_gotcha'||k==='beneficio')continue;
+    payload[k]=v;
+  }
+  payload.beneficio=benef.join(', ');
+  const proto='AA-'+Date.now().toString(36).toUpperCase().slice(-6);
+  payload.protocolo=proto;
+  payload.token=TOKEN;
+
+  try{
+    if(files.length){btn.textContent='Preparando documentos...';}
+    const docs=[];
+    for(const f of files){docs.push(await processarArquivo(f));}
+    payload.documentos=docs;
+
+    if(ENDPOINT && !ENDPOINT.includes('COLE_AQUI')){
+      btn.textContent='Enviando...';
+      await fetch(ENDPOINT,{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(payload)
+      });
+    }
+    finalizar(proto);
+  }catch(_){
+    btn.disabled=false;btn.textContent='Enviar ficha';
+    alert('Não foi possível enviar agora. Verifique a conexão e tente novamente.');
+  }
+});
+
+function finalizar(proto){
+  $('#ficha').style.display='none';
+  document.querySelector('.consent').style.display='none';
+  document.querySelector('.submit-wrap').style.display='none';
+  document.querySelector('.steps').style.display='none';
+  $('#proto').textContent='Protocolo '+proto;
+  $('#done').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#btnNew').addEventListener('click',()=>location.reload());
+</script>
+</body>
+</html>
