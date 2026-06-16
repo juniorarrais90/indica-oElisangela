@@ -522,6 +522,19 @@
           <div class="errmsg" data-for="contato">Informe um telefone.</div>
         </div>
         <div class="field">
+          <label class="lbl" for="email">E-mail</label>
+          <div class="hint">Necessário quando a assinatura for online (envio do link).</div>
+          <input type="email" id="email" name="cliente_email" inputmode="email" autocapitalize="off" autocomplete="off" placeholder="email@exemplo.com">
+          <div class="errmsg" data-for="email">E-mail inválido.</div>
+        </div>
+        <div class="field">
+          <label class="lbl">Como o cliente vai assinar os documentos?</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="forma_assinatura" value="À mão (imprimir)">À mão (imprimir)</label>
+            <label class="opt"><input type="radio" name="forma_assinatura" value="Online">Online</label>
+          </div>
+        </div>
+        <div class="field">
           <label class="lbl" for="senhagov">Senha Gov.br</label>
           <div class="hint">Acesso autorizado por procuração. Preencha somente se o cliente forneceu.</div>
           <input type="text" id="senhagov" name="cliente_senha_gov" placeholder="Senha gov.br" autocomplete="off">
@@ -745,11 +758,14 @@ function renderFiles(){
   });
 }
 
+/* ---------- forma de assinatura: limpa erro do e-mail ao mudar ---------- */
+document.querySelectorAll('input[name="forma_assinatura"]').forEach(r=>r.addEventListener('change',()=>clearErr($('#email'))));
+
 /* ---------- validação ---------- */
 function showErr(el){el.classList.add('invalid');const m=document.querySelector(`.errmsg[data-for="${el.id}"]`);if(m)m.classList.add('show');}
 function clearErr(el){el.classList.remove('invalid');const m=document.querySelector(`.errmsg[data-for="${el.id}"]`);if(m)m.classList.remove('show');}
 function clearErrGroup(name){const m=document.querySelector(`.errmsg[data-for="${name}"]`);if(m)m.classList.remove('show');}
-['nome','nasc','cpf','contato','cidade','uf'].forEach(id=>{
+['nome','nasc','cpf','contato','cidade','uf','email'].forEach(id=>{
   $('#'+id).addEventListener('input',()=>clearErr($('#'+id)));
 });
 
@@ -806,6 +822,14 @@ $('#ficha').addEventListener('submit',async e=>{
 
   const benef=[...document.querySelectorAll('input[name="beneficio"]:checked')].map(c=>c.value);
   if(benef.length===0){document.querySelector('.errmsg[data-for="beneficio"]').classList.add('show');ok=false;}
+
+  const emailEl=$('#email');const emailVal=emailEl.value.trim();
+  const fa=document.querySelector('input[name="forma_assinatura"]:checked');
+  const ehOnline=fa&&fa.value==='Online';
+  const emErr=document.querySelector('.errmsg[data-for="email"]');
+  if(ehOnline&&!emailVal){emErr.textContent='Para assinatura online, informe o e-mail.';showErr(emailEl);ok=false;}
+  else if(emailVal&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)){emErr.textContent='E-mail inválido.';showErr(emailEl);ok=false;}
+  else clearErr(emailEl);
 
   if(!$('#lgpd').checked){alert('Confirme a autorização do cliente (LGPD) para enviar.');ok=false;}
   if(!ok){focusFirst();return;}
