@@ -113,7 +113,7 @@
   .errmsg{display:none;color:var(--err);font-size:12px;margin-top:5px;font-weight:bold;}
   .errmsg.show{display:block;}
 
-  /* Caixas de benefício (checkbox cards) */
+  /* Caixas de benefício (seleção única) */
   .benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .benefit{
     position:relative;border:1.5px solid var(--line);border-radius:9px;
@@ -124,12 +124,12 @@
   .benefit input{position:absolute;opacity:0;width:0;height:0;}
   .benefit .box{
     position:absolute;left:12px;top:50%;transform:translateY(-50%);
-    width:20px;height:20px;border:2px solid #c4cad6;border-radius:5px;background:#fff;
+    width:20px;height:20px;border:2px solid #c4cad6;border-radius:50%;background:#fff;
   }
   .benefit input:checked ~ .box{background:var(--navy);border-color:var(--navy);}
   .benefit input:checked ~ .box:after{
-    content:"";position:absolute;left:5px;top:1px;width:6px;height:11px;
-    border:solid var(--gold);border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+    content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;
+    border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);
   }
   .benefit:has(input:checked){border-color:var(--navy);background:#f6f8fc;}
 
@@ -155,10 +155,13 @@
 
   /* upload */
   .drop{
-    border:1.5px dashed #c4cad6;border-radius:9px;padding:20px 14px;text-align:center;
-    background:#fafbfc;cursor:pointer;color:var(--muted);font-size:13.5px;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    border:1.5px dashed #c4cad6;border-radius:9px;padding:22px 16px;text-align:center;
+    background:#fafbfc;cursor:pointer;color:var(--muted);line-height:1.4;
   }
-  .drop strong{color:var(--navy);}
+  .drop .drop-title{font-size:15px;color:var(--navy);font-weight:bold;}
+  .drop .drop-desc{font-size:13px;color:var(--muted);}
+  .drop .drop-sub{font-size:12px;color:#9aa3b2;}
   .filelist{margin-top:10px;display:flex;flex-direction:column;gap:7px;}
   .fileitem{
     display:flex;align-items:center;gap:9px;font-size:13px;background:#f6f8fc;
@@ -253,138 +256,22 @@
     <section class="card">
       <div class="card-head"><div class="card-num">2</div><div class="card-title">Tipo de causa / benefício</div></div>
       <div class="card-body">
-        <div class="hint" style="margin-top:0;">Marque uma ou mais opções. Os campos específicos aparecem abaixo conforme a marcação.</div>
+        <div class="hint" style="margin-top:0;">Selecione o tipo de causa/benefício. Os campos específicos aparecem abaixo conforme a opção.</div>
         <div class="benefits">
-          <label class="benefit"><input type="checkbox" name="beneficio" value="Salário-maternidade" data-dyn="d-sm">Salário-maternidade<small>Gestante, parto recente ou adoção</small><span class="box"></span></label>
-          <label class="benefit"><input type="checkbox" name="beneficio" value="BPC/LOAS" data-dyn="d-bpc">BPC / LOAS<small>Idoso 65+ ou deficiência</small><span class="box"></span></label>
-          <label class="benefit"><input type="checkbox" name="beneficio" value="Aposentadoria" data-dyn="d-apo">Aposentadoria<small>Idade, tempo, invalidez, rural</small><span class="box"></span></label>
-          <label class="benefit"><input type="checkbox" name="beneficio" value="Auxílio-doença" data-dyn="d-aux">Auxílio-doença<small>Incapacidade / afastamento</small><span class="box"></span></label>
-          <label class="benefit"><input type="checkbox" name="beneficio" value="Auxílio-acidente" data-dyn="d-aci">Auxílio-acidente<small>Sequela após acidente</small><span class="box"></span></label>
-          <label class="benefit"><input type="checkbox" name="beneficio" value="Trabalhista" data-dyn="d-trab">Trabalhista<small>Verbas, rescisão, vínculo</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="Salário-maternidade" data-dyn="d-sm">Salário-maternidade<small>Gestante, parto recente ou adoção</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="BPC/LOAS" data-dyn="d-bpc">BPC / LOAS<small>Idoso 65+ ou deficiência</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="Aposentadoria" data-dyn="d-apo">Aposentadoria<small>Idade, tempo, invalidez, rural</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="Auxílio-doença" data-dyn="d-aux">Auxílio-doença<small>Incapacidade / afastamento</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="Auxílio-acidente" data-dyn="d-aci">Auxílio-acidente<small>Sequela após acidente</small><span class="box"></span></label>
+          <label class="benefit"><input type="radio" name="beneficio" value="Trabalhista" data-dyn="d-trab">Trabalhista<small>Verbas, rescisão, vínculo</small><span class="box"></span></label>
         </div>
-        <div class="errmsg" data-for="beneficio" style="margin-top:10px;">Marque ao menos um tipo.</div>
+        <div class="errmsg" data-for="beneficio" style="margin-top:10px;">Selecione um tipo.</div>
       </div>
     </section>
 
-    <!-- 3. Dados do cliente -->
-    <section class="card">
-      <div class="card-head"><div class="card-num">3</div><div class="card-title">Dados do cliente</div></div>
-      <div class="card-body">
-        <div class="field">
-          <label class="lbl" for="nome">Nome completo do cliente <span class="req">*</span></label>
-          <input type="text" id="nome" name="cliente_nome" placeholder="Nome completo" autocomplete="off">
-          <div class="errmsg" data-for="nome">Informe o nome do cliente.</div>
-        </div>
-        <div class="row2">
-          <div class="field grow">
-            <label class="lbl" for="nasc">Data de nascimento <span class="req">*</span></label>
-            <input type="date" id="nasc" name="cliente_nascimento">
-            <div class="errmsg" data-for="nasc">Informe a data.</div>
-          </div>
-          <div class="field shrink">
-            <label class="lbl" for="idade">Idade</label>
-            <input type="text" id="idade" name="cliente_idade" readonly placeholder="—" style="background:#f5f6f8;">
-          </div>
-        </div>
-        <div class="field">
-          <label class="lbl" for="estciv">Estado civil</label>
-          <select id="estciv" name="cliente_estado_civil">
-            <option value="">Selecione</option>
-            <option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option>
-            <option>Divorciado(a)</option><option>Viúvo(a)</option>
-          </select>
-        </div>
-        <div class="row2">
-          <div class="field grow">
-            <label class="lbl" for="cpf">CPF <span class="req">*</span></label>
-            <input type="tel" id="cpf" name="cliente_cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
-            <div class="errmsg" data-for="cpf">CPF inválido.</div>
-          </div>
-          <div class="field grow">
-            <label class="lbl" for="rg">RG</label>
-            <input type="text" id="rg" name="cliente_rg" placeholder="0000000-0">
-          </div>
-        </div>
-        <div class="field">
-          <label class="lbl" for="contato">Telefone / WhatsApp <span class="req">*</span></label>
-          <input type="tel" id="contato" name="cliente_contato" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="15">
-          <div class="errmsg" data-for="contato">Informe um telefone.</div>
-        </div>
-        <div class="field">
-          <label class="lbl" for="senhagov">Senha Gov.br</label>
-          <div class="hint">Acesso autorizado por procuração. Preencha somente se o cliente forneceu.</div>
-          <input type="text" id="senhagov" name="cliente_senha_gov" placeholder="Senha gov.br" autocomplete="off">
-        </div>
-        <div class="field">
-          <label class="lbl">Recebe Bolsa Família?</label>
-          <div class="opts">
-            <label class="opt"><input type="radio" name="bolsa_familia" value="Sim">Sim</label>
-            <label class="opt"><input type="radio" name="bolsa_familia" value="Não">Não</label>
-          </div>
-        </div>
-        <div class="field">
-          <label class="lbl">Trabalha atualmente?</label>
-          <div class="opts">
-            <label class="opt"><input type="radio" name="trabalha" value="Sim">Sim</label>
-            <label class="opt"><input type="radio" name="trabalha" value="Não">Não</label>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. Endereço -->
-    <section class="card">
-      <div class="card-head"><div class="card-num">4</div><div class="card-title">Endereço</div></div>
-      <div class="card-body">
-        <div class="field">
-          <label class="lbl">Zona de residência</label>
-          <div class="opts">
-            <label class="opt"><input type="radio" name="zona" value="Urbana">Urbana</label>
-            <label class="opt"><input type="radio" name="zona" value="Rural">Rural</label>
-          </div>
-        </div>
-        <div class="row2">
-          <div class="field shrink">
-            <label class="lbl" for="cep">CEP</label>
-            <input type="tel" id="cep" name="end_cep" inputmode="numeric" placeholder="00000-000" maxlength="9">
-          </div>
-          <div class="field grow">
-            <label class="lbl" for="cidade">Cidade <span class="req">*</span></label>
-            <input type="text" id="cidade" name="end_cidade" placeholder="Cidade">
-            <div class="errmsg" data-for="cidade">Informe a cidade.</div>
-          </div>
-        </div>
-        <div class="row2">
-          <div class="field grow">
-            <label class="lbl" for="bairro">Bairro</label>
-            <input type="text" id="bairro" name="end_bairro" placeholder="Bairro">
-          </div>
-          <div class="field shrink">
-            <label class="lbl" for="uf">UF <span class="req">*</span></label>
-            <input type="text" id="uf" name="end_uf" placeholder="UF" maxlength="2" style="text-transform:uppercase;">
-            <div class="errmsg" data-for="uf">UF</div>
-          </div>
-        </div>
-        <div class="row2">
-          <div class="field grow">
-            <label class="lbl" for="rua">Rua / logradouro</label>
-            <input type="text" id="rua" name="end_rua" placeholder="Rua, avenida...">
-          </div>
-          <div class="field shrink">
-            <label class="lbl" for="num">Número</label>
-            <input type="text" id="num" name="end_numero" placeholder="Nº">
-          </div>
-        </div>
-        <div class="field">
-          <label class="lbl" for="compl">Complemento / ponto de referência</label>
-          <input type="text" id="compl" name="end_complemento" placeholder="Apto, bloco, referência">
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. Campos específicos por benefício -->
+    <!-- 3. Campos específicos por benefício -->
     <section class="card" id="cardEspecifico" style="display:none;">
-      <div class="card-head"><div class="card-num">5</div><div class="card-title">Detalhes do benefício</div></div>
+      <div class="card-head"><div class="card-num">3</div><div class="card-title">Detalhes do benefício</div></div>
       <div class="card-body">
 
         <!-- Salário-maternidade -->
@@ -419,11 +306,8 @@
               <option>MEI</option>
               <option>Segurada especial (rural)</option>
               <option>Desempregada / sem contribuição recente</option>
+              <option>Nunca contribuiu ao INSS</option>
             </select>
-          </div>
-          <div class="field">
-            <label class="lbl" for="sm_ultcontrib">Última contribuição ao INSS (mês/ano)</label>
-            <input type="text" id="sm_ultcontrib" name="sm_ultima_contribuicao" placeholder="Ex.: 03/2026">
           </div>
         </div>
 
@@ -597,13 +481,126 @@
       </div>
     </section>
 
+    <!-- 4. Dados do cliente -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">4</div><div class="card-title">Dados do cliente</div></div>
+      <div class="card-body">
+        <!-- nacionalidade fixa: não aparece no formulário, segue fixa para o AdvBox -->
+        <input type="hidden" name="cliente_nacionalidade" value="Brasileiro(a)">
+        <div class="field">
+          <label class="lbl" for="cpf">CPF <span class="req">*</span></label>
+          <input type="tel" id="cpf" name="cliente_cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+          <div class="errmsg" data-for="cpf">CPF inválido.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="nome">Nome completo do cliente <span class="req">*</span></label>
+          <input type="text" id="nome" name="cliente_nome" placeholder="NOME COMPLETO" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;">
+          <div class="errmsg" data-for="nome">Informe o nome do cliente.</div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="nasc">Data de nascimento <span class="req">*</span></label>
+            <input type="date" id="nasc" name="cliente_nascimento">
+            <div class="errmsg" data-for="nasc">Informe a data.</div>
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="idade">Idade</label>
+            <input type="text" id="idade" name="cliente_idade" readonly placeholder="—" style="background:#f5f6f8;">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="estciv">Estado civil</label>
+          <select id="estciv" name="cliente_estado_civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option>
+            <option>Divorciado(a)</option><option>Viúvo(a)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl" for="contato">Telefone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="contato" name="cliente_contato" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="15">
+          <div class="errmsg" data-for="contato">Informe um telefone.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="senhagov">Senha Gov.br</label>
+          <div class="hint">Acesso autorizado por procuração. Preencha somente se o cliente forneceu.</div>
+          <input type="text" id="senhagov" name="cliente_senha_gov" placeholder="Senha gov.br" autocomplete="off">
+        </div>
+        <div class="field">
+          <label class="lbl">Recebe Bolsa Família?</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="bolsa_familia" value="Sim">Sim</label>
+            <label class="opt"><input type="radio" name="bolsa_familia" value="Não">Não</label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Trabalha atualmente?</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="trabalha" value="Sim">Sim</label>
+            <label class="opt"><input type="radio" name="trabalha" value="Não">Não</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Endereço -->
+    <section class="card">
+      <div class="card-head"><div class="card-num">5</div><div class="card-title">Endereço</div></div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl">Zona de residência</label>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="zona" value="Urbana">Urbana</label>
+            <label class="opt"><input type="radio" name="zona" value="Rural">Rural</label>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field shrink">
+            <label class="lbl" for="cep">CEP</label>
+            <input type="tel" id="cep" name="end_cep" inputmode="numeric" placeholder="00000-000" maxlength="9">
+          </div>
+          <div class="field grow">
+            <label class="lbl" for="cidade">Cidade <span class="req">*</span></label>
+            <input type="text" id="cidade" name="end_cidade" placeholder="Cidade">
+            <div class="errmsg" data-for="cidade">Informe a cidade.</div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="bairro">Bairro</label>
+            <input type="text" id="bairro" name="end_bairro" placeholder="Bairro">
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="uf">UF <span class="req">*</span></label>
+            <input type="text" id="uf" name="end_uf" placeholder="UF" maxlength="2" style="text-transform:uppercase;">
+            <div class="errmsg" data-for="uf">UF</div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field grow">
+            <label class="lbl" for="rua">Rua / logradouro</label>
+            <input type="text" id="rua" name="end_rua" placeholder="Rua, avenida...">
+          </div>
+          <div class="field shrink">
+            <label class="lbl" for="num">Número</label>
+            <input type="text" id="num" name="end_numero" placeholder="Nº">
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="compl">Complemento / ponto de referência</label>
+          <input type="text" id="compl" name="end_complemento" placeholder="Apto, bloco, referência">
+        </div>
+      </div>
+    </section>
+
     <!-- 6. Documentos -->
     <section class="card">
       <div class="card-head"><div class="card-num">6</div><div class="card-title">Documentos (foto ou PDF)</div></div>
       <div class="card-body">
         <label class="drop" for="docs">
-          <strong>Toque para anexar</strong><br>RG, CPF, comprovantes, laudos, carteira de trabalho...<br>
-          <span style="font-size:12px;">Fotos ou PDF — pode selecionar vários</span>
+          <span class="drop-title">Toque para anexar</span>
+          <span class="drop-desc">RG, CPF, comprovantes, laudos, carteira de trabalho</span>
+          <span class="drop-sub">Fotos ou PDF — pode selecionar vários</span>
         </label>
         <input type="file" id="docs" name="documentos" accept="image/*,application/pdf" multiple style="display:none;">
         <div class="filelist" id="filelist"></div>
@@ -681,6 +678,9 @@ $('#cep').addEventListener('input',e=>{
   v=v.replace(/(\d{5})(\d)/,'$1-$2');
   e.target.value=v;
 });
+
+/* ---------- nome do cliente sempre em MAIÚSCULAS ---------- */
+$('#nome').addEventListener('input',e=>{const p=e.target.selectionStart;e.target.value=e.target.value.toUpperCase();e.target.setSelectionRange(p,p);});
 
 /* ---------- idade automática ---------- */
 $('#nasc').addEventListener('change',e=>{
