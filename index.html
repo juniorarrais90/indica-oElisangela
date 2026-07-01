@@ -667,7 +667,7 @@
    Enquanto vazio, o formulário valida e mostra a confirmação, mas
    NÃO envia para lugar nenhum (modo demonstração).
 ================================================================== */
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbzl0eJsyr85IVeCFGo-na_mMewR6rFSpXxH54uGHKnsoiod7hsHd-f5fl6uoJzvCs_5pg/exec";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbx7QTy0fPsdHRhgjKMWR6wB_4mhSHeHLEPQlvMf_V4mgEdL0Cm7Zdua8avFX4KPvs3N/exec";
 const TOKEN = "arrais-2cb4da5540a543f4"; // precisa ser IGUAL ao TOKEN do Apps Script
 
 /* ---------- máscaras ---------- */
@@ -854,14 +854,15 @@ $('#ficha').addEventListener('submit',async e=>{
     for(const f of files){docs.push(await processarArquivo(f));}
     payload.documentos=docs;
 
-    if(ENDPOINT && !ENDPOINT.includes('COLE_AQUI')){
-      btn.textContent='Enviando...';
-      await fetch(ENDPOINT,{
-        method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify(payload)
-      });
+    btn.textContent='Enviando...';
+    const resposta = await fetch(ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    const resultado = await resposta.json();
+    if(!resultado || resultado.ok !== true){
+      throw new Error((resultado && resultado.erro) || 'Falha no envio');
     }
     finalizar(proto);
   }catch(_){
