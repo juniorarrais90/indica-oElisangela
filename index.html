@@ -210,6 +210,12 @@
     border-radius:8px;padding:12px 22px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;
   }
 
+  .portal-link{display:none;margin:0 16px 14px;text-align:center;}
+  .portal-link a,.done .portal{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;
+    border-radius:8px;padding:11px 20px;font-size:14px;font-weight:bold;font-family:inherit;}
+  .done .portal{margin-top:18px;}
+  .done .aviso-portal{font-size:12.5px;color:var(--muted);margin-top:14px;}
+
   @media (max-width:420px){
     .benefits{grid-template-columns:1fr;}
     .row2{flex-direction:column;gap:0;}
@@ -229,6 +235,7 @@
     <p class="lead">Preencha os dados do cliente indicado. Ao enviar, a ficha é registrada e segue direto para a análise do escritório.</p>
   </header>
 
+  <div class="portal-link" id="portalTopo"><a href="#" target="_blank" rel="noopener">Ver minhas indicações</a></div>
   <ul class="steps">
     <li class="active">Indicação</li>
     <li>Benefício</li>
@@ -646,10 +653,12 @@
   <!-- Tela de confirmação (trava) -->
   <div class="done" id="done">
     <div class="seal"></div>
-    <h2>Ficha enviada</h2>
-    <p>Recebemos a indicação. O escritório vai analisar o caso e dar retorno. Obrigado pela parceria.</p>
+    <h2 id="doneTitulo">Ficha enviada</h2>
+    <p id="doneTexto">Recebemos a indicação. O escritório vai analisar o caso e dar retorno. Obrigado pela parceria.</p>
     <div class="proto" id="proto">PROTOCOLO</div>
     <br>
+    <a class="portal" id="btnPortal" href="#" target="_blank" rel="noopener" style="display:none">Ver minhas indicações</a>
+    <p class="aviso-portal" id="avisoPortal">Acompanhe a situação de cada cliente no seu portal (o link está nos e-mails do escritório).</p>
     <button class="reset" id="btnNew">Enviar outra ficha</button>
   </div>
 
@@ -855,28 +864,65 @@ $('#ficha').addEventListener('submit',async e=>{
     payload.documentos=docs;
 
     btn.textContent='Enviando...';
-    const resposta = await fetch(ENDPOINT,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)
-    });
-    const resultado = await resposta.json();
-    if(!resultado || resultado.ok !== true){
-      throw new Error((resultado && resultado.erro) || 'Falha no envio');
+    let resultado = await enviarFicha(payload);
+    if(resultado.duplicado){
+      const msg='Esta cliente já foi indicada em '+resultado.data+' (protocolo '+resultado.protocolo+
+        (resultado.status?', situação: '+resultado.status:'')+').\n\n'+
+        'Não é preciso enviar de novo: acompanhe pelo seu portal.\n\n'+
+        'Quer enviar mesmo assim (por exemplo, com documentos novos)?';
+      if(!confirm(msg)){ finalizar(resultado.protocolo, true); return; }
+      payload.forcar=true;
+      resultado = await enviarFicha(payload);
     }
-    finalizar(proto);
+    finalizar(resultado.protocolo || proto, false);
   }catch(_){
     btn.disabled=false;btn.textContent='Enviar ficha';
-    alert('Não foi possível enviar agora. Verifique a conexão e tente novamente.');
+    alert('Não foi possível confirmar o envio. Antes de enviar de novo, confira no seu portal se a cliente já aparece.');
   }
 });
 
-function finalizar(proto){
+// Portal da parceira: o link pessoal chega uma vez por ?portal=TOKEN e fica guardado neste aparelho.
+const PORTAL_BASE = "https://script.google.com/macros/s/AKfycby_owWyEdmHfhd_tDmXi_hDbDnQ5fzUNhgXgyo8sgIzffPdftbFXeD7wwCuqINE5Ao/exec?t=";
+function tokenPortal(){
+  try{
+    const t=new URLSearchParams(location.search).get('portal');
+    if(t){ localStorage.setItem('arrais_portal', t); history.replaceState(null,'',location.pathname); }
+    return localStorage.getItem('arrais_portal')||'';
+  }catch(_){ return ''; }
+}
+const TOKEN_PORTAL = tokenPortal();
+if(TOKEN_PORTAL){
+  const topo=document.getElementById('portalTopo');
+  topo.style.display='block';
+  topo.querySelector('a').href=PORTAL_BASE+encodeURIComponent(TOKEN_PORTAL);
+}
+
+async function enviarFicha(payload){
+  const resposta=await fetch(ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload)
+  });
+  const r=await resposta.json();
+  if(!r||r.ok!==true) throw new Error((r&&r.erro)||'Falha no envio');
+  return r;
+}
+
+function finalizar(proto, jaExistia){
   $('#ficha').style.display='none';
   document.querySelector('.consent').style.display='none';
   document.querySelector('.submit-wrap').style.display='none';
   document.querySelector('.steps').style.display='none';
+  $('#portalTopo').style.display='none';
+  if(jaExistia){
+    $('#doneTitulo').textContent='Cliente já indicada';
+    $('#doneTexto').textContent='Esta cliente já está com o escritório. Nada foi enviado de novo.';
+  }
   $('#proto').textContent='Protocolo '+proto;
+  if(TOKEN_PORTAL){
+    const b=$('#btnPortal'); b.href=PORTAL_BASE+encodeURIComponent(TOKEN_PORTAL); b.style.display='inline-block';
+    $('#avisoPortal').textContent='A cliente aparece no portal em instantes, com a situação atualizada pelo escritório.';
+  }
   $('#done').classList.add('show');
   window.scrollTo({top:0,behavior:'smooth'});
 }
